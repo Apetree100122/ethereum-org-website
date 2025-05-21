@@ -1,11 +1,18 @@
+
 {
   "compilerOptions": {
     "target": "ES6",
     "lib": ["dom", "dom.iterable", "esnext", "ES2021.String"],
-    "allowJs": true,
+    "allowJs": false, 
+    // Disallow JS for stricter type safety
     "skipLibCheck": true,
     "strict": true,
-    "noImplicitAny": false,
+    // Enables all strict type-checking options
+    "noImplicitAny": true, 
+    // Prevents implicit 'any' types
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
