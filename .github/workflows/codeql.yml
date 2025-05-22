@@ -4,49 +4,38 @@ on:
   push:
     branches: [ dev ]
   pull_request:
-    branches: [  dev ]
+    branches: [ dev ]
   schedule:
-    - cron: '0 2 * * 0'  
-    # Weekly scan at 02:00 UTC
+    - cron: '0 2 * * 0'  # Weekly scan at 02:00 UTC
 
 permissions:
   actions: read
   contents: read
   security-events: write
-  # Optionally restrict more, depending on your needs
 
 jobs:
- name: CodeQL Analyze
-runs-on: ubuntu-latest
+  codeql:
+    name: CodeQL Analyze
+    runs-on: ubuntu-latest
+    strategy:
       matrix:
-        language: ${{ matrix.language }}
-
+        language: [ 'javascript', 'typescript' ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1        
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           queries: security-extended,security-and-quality
-          config-file: .github/codeql-config.yml  
-       
-      - build: Autobuild
-        uses: github/codeql-action/autobuild@v3
+          config-file: .github/codeql-config.yml
 
-  
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
           upload: SARIF
           category: "/language:${{ matrix.language }}"
-
-     
-      - name: Upload SARIF artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: codeql-sarif-${{ matrix.language }}
-          path: ${{ github.workspace }}/results/${{ matrix.language }}.sarif
