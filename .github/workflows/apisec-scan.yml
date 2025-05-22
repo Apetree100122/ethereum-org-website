@@ -10,7 +10,7 @@ on:
 permissions:
   contents: read
   security-events: write
-  actions: read
+  actions: write
 
 jobs:
   apisec-scan:
