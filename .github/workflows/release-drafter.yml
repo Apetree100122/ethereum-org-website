@@ -2,12 +2,10 @@ name: Release Drafter
 
 on:
   push:
-    branches:
-      - dev
+    branches:   dev
 
 concurrency:
   group: release-drafter-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   update_release_draft:
