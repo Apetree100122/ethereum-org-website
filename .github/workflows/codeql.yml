@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        language: [ 'javascript', 'typescript' ]
+        language: [ 'typescript' ] # Removed 'javascript'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
