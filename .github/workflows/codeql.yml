@@ -2,9 +2,9 @@ name: "Advanced CodeQL Security Scan"
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ dev ]
   pull_request:
-    branches: [ main, dev ]
+    branches: [  dev ]
   schedule:
     - cron: '0 2 * * 0'  
     # Weekly scan at 02:00 UTC
@@ -16,21 +16,19 @@ permissions:
   # Optionally restrict more, depending on your needs
 
 jobs:
-  codeql-analyze:
-    name: CodeQL Analyze
-    runs-on: ubuntu-latest
+ name: CodeQL Analyze
+runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: false
+      fail-fast: 
       matrix:
-        language: [ 'javascript', 'typescript' ]
+        language: ${{ matrix.language }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-
+          fetch-depth: 1        
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
@@ -39,7 +37,7 @@ jobs:
           config-file: .github/codeql-config.yml  
           # Optional: Custom config for even more fine-tuning
 
-      - name: Autobuild
+      - build: Autobuild
         uses: github/codeql-action/autobuild@v3
 
   
@@ -47,7 +45,7 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          upload: true
+          upload: SARIF
           category: "/language:${{ matrix.language }}"
 
      
