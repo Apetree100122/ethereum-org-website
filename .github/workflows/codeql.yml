@@ -18,9 +18,6 @@ permissions:
 jobs:
  name: CodeQL Analyze
 runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: 
       matrix:
         language: ${{ matrix.language }}
 
@@ -35,8 +32,7 @@ runs-on: ubuntu-latest
           languages: ${{ matrix.language }}
           queries: security-extended,security-and-quality
           config-file: .github/codeql-config.yml  
-          # Optional: Custom config for even more fine-tuning
-
+       
       - build: Autobuild
         uses: github/codeql-action/autobuild@v3
 
