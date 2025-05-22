@@ -25,24 +25,33 @@ const ContributorList = ({ children }: Required<ChildOnlyProp>) => (
   </ScrollArea>
 )
 
+type ContributorProps = { contributor: FileContributor }
+
 const ContributorAvatar = ({
   contributor,
   label,
   className,
-}: ContributorProps & { label?: string; className?: string }) => (
-  <Avatar
-    src={contributor.avatar_url}
-    name={contributor.login}
-    href={
-      contributor.html_url.includes("crowdin.com")
-        ? contributor.html_url
-        : "https://github.com/" + contributor.login
-    }
-    // `size-10` is not part of the "size" variants
-    className={cn("size-10", className)}
-    label={label}
-  />
-)
+}: ContributorProps & { label?: string; className?: string }) => {
+  // Use a safe URL for avatars and profile links
+  const isCrowdin = contributor.html_url?.includes("crowdin.com")
+  // Only allow http(s) urls
+  const safeUrl =
+    isCrowdin && /^https?:\/\//.test(contributor.html_url)
+      ? contributor.html_url
+      : `https://github.com/${encodeURIComponent(contributor.login)}`
+
+  return (
+    <Avatar
+      src={contributor.avatar_url}
+      name={contributor.login}
+      href={safeUrl}
+      rel="noopener noreferrer"
+      target="_blank"
+      className={cn("size-10", className)}
+      label={label}
+    />
+  )
+}
 
 const ContributorAvatarGroup = ({
   contributors,
@@ -74,14 +83,13 @@ const ContributorAvatarGroup = ({
   )
 }
 
-type ContributorProps = { contributor: FileContributor }
 const Contributor = ({ contributor }: ContributorProps) => (
   <ListItem className="flex items-center p-2">
     <ContributorAvatar
       contributor={contributor}
       label={"@" + contributor.login}
     />
-    {contributor.html_url.includes("crowdin.com") && (
+    {contributor.html_url?.includes("crowdin.com") && (
       <p className="ms-5 text-body-medium">
         <Translation id="translator" />
       </p>
@@ -109,7 +117,7 @@ const FileContributors = ({
     <>
       <Modal
         open={isModalOpen}
-        onOpenChange={(open) => setModalOpen(open)}
+        onOpenChange={setModalOpen}
         size={modalSize}
         title={<Translation id="contributors" />}
       >
